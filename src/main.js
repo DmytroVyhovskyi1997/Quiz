@@ -1,4 +1,3 @@
-import Notiflix from "notiflix";
 
  const questions = [
   {
@@ -240,7 +239,7 @@ function clearPage() {
           form.reset();
         },
         error: function (xhr, status, error) {
-          Notiflix.Notify.info("Помилка при відправці форми");
+          alert("Помилка при відправці форми");
         },
       });
     },
