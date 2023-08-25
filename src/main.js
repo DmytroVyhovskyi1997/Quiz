@@ -1,6 +1,6 @@
 import Notiflix from "notiflix";
 
-export const questions = [
+ const questions = [
   {
     question: "Яка мова прогамування працює в браузері?",
     answers: ["Java", "C", "Python", "JavaScript"],
@@ -147,7 +147,7 @@ function clearPage() {
   listContainer.innerHTML = "";
 }
 
-export function formInput(formContainer) {
+ function formInput(formContainer) {
   const formTemplate = `
     <div class="box">
       <form class="form" id="contact-form">
