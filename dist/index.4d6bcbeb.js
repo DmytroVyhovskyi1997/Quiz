@@ -574,98 +574,12 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 }
 
 },{}],"gLLPy":[function(require,module,exports) {
-var _formInput = require("./formInput/formInput");
-var _questions = require("./questions/questions");
-const headerContainer = document.querySelector("#header");
-const listContainer = document.querySelector("#list");
-const submitBtn = document.querySelector("#submit");
-const formContainer = document.querySelector("#form");
-const goBack = document.querySelector("#back");
-let score = 0;
-let questionIndex = 0;
-clearPage();
-showQuestions();
-goBackButton();
-submitBtn.addEventListener("click", checkAnswer);
-goBack.addEventListener("click", goBackButton);
-function goBackButton() {
-    if (questionIndex > 0) {
-        questionIndex--;
-        clearPage();
-        showQuestions();
-    }
-}
-function showQuestions() {
-    const headerTemplate = `<h2 class="title">%title%</h2>`;
-    const title = headerTemplate.replace("%title%", (0, _questions.questions)[questionIndex]["question"]);
-    headerContainer.innerHTML = title;
-    let answerNumber = 1;
-    for (let answerText of (0, _questions.questions)[questionIndex]["answers"]){
-        const questionsTemplate = `
-	  <li>
-     <label>
-	  <input value='%number%' type="radio" class="answer" name="answer" />
-	  <span>%answer% </span>
-     </label>
-    </li>`;
-        let answerHtml = questionsTemplate.replace("%answer%", answerText);
-        answerHtml = answerHtml.replace("%number%", answerNumber);
-        listContainer.innerHTML += answerHtml;
-        answerNumber++;
-    }
-}
-function checkAnswer() {
-    const checkedRadio = listContainer.querySelector('input[type="radio"]:checked');
-    if (!checkedRadio) {
-        submitBtn.blur();
-        return;
-    }
-    const userAnswer = parseInt(checkedRadio.value);
-    if (userAnswer === (0, _questions.questions)[questionIndex]["correct"]) score++;
-    if (questionIndex !== (0, _questions.questions).length - 1) {
-        questionIndex++;
-        clearPage();
-        showQuestions();
-    } else {
-        clearPage();
-        showResults();
-    }
-}
-function showResults() {
-    const resultsTemplate = `
-    <h2 class="title">%title%</h2>
-	<h3 class="summary">%message%</h3>
-	<p class="result">%result%</p>
-`;
-    let title = "";
-    let message = "";
-    if (score === (0, _questions.questions).length) {
-        title = "Вітаємо ✅";
-        message = "Ви відповіли на всі питання";
-    } else if (score * 100 / (0, _questions.questions).length >= 50) {
-        title = "Хороший результат \uD83D\uDC4C";
-        message = "Ви відповіли на половину запитань";
-    } else {
-        title = "Варто постаратися ❌";
-        message = "Ви відповіли менше половини запитань";
-    }
-    let result = `${score} з ${(0, _questions.questions).length}`;
-    const finalMessage = resultsTemplate.replace("%title%", title).replace("%message%", message).replace("%result%", result);
-    headerContainer.innerHTML = finalMessage;
-    submitBtn.blur();
-    submitBtn.innerHTML = "Почати спочатку";
-    submitBtn.onclick = ()=>history.go();
-    (0, _formInput.formInput)(formContainer);
-}
-function clearPage() {
-    headerContainer.innerHTML = "";
-    listContainer.innerHTML = "";
-}
-
-},{"./questions/questions":"4iJdV","./formInput/formInput":"7ZcRl"}],"4iJdV":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "questions", ()=>questions);
+parcelHelpers.export(exports, "formInput", ()=>formInput);
+var _notiflix = require("notiflix");
+var _notiflixDefault = parcelHelpers.interopDefault(_notiflix);
 const questions = [
     {
         question: "Яка мова прогамування працює в браузері?",
@@ -708,55 +622,103 @@ const questions = [
         correct: 2
     }
 ];
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"7ZcRl":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "formInput", ()=>formInput);
-var _notiflix = require("notiflix");
-var _notiflixDefault = parcelHelpers.interopDefault(_notiflix);
+const headerContainer = document.querySelector("#header");
+const listContainer = document.querySelector("#list");
+const submitBtn = document.querySelector("#submit");
+const formContainer = document.querySelector("#form");
+const goBack = document.querySelector("#back");
+let score = 0;
+let questionIndex = 0;
+clearPage();
+showQuestions();
+goBackButton();
+submitBtn.addEventListener("click", checkAnswer);
+goBack.addEventListener("click", goBackButton);
+function goBackButton() {
+    if (questionIndex > 0) {
+        questionIndex--;
+        clearPage();
+        showQuestions();
+    }
+}
+function showQuestions() {
+    const headerTemplate = `<h2 class="title">%title%</h2>`;
+    const title = headerTemplate.replace("%title%", questions[questionIndex]["question"]);
+    headerContainer.innerHTML = title;
+    let answerNumber = 1;
+    for (let answerText of questions[questionIndex]["answers"]){
+        const questionsTemplate = `
+	  <li>
+     <label>
+	  <input value='%number%' type="radio" class="answer" name="answer" />
+	  <span>%answer% </span>
+     </label>
+    </li>`;
+        let answerHtml = questionsTemplate.replace("%answer%", answerText);
+        answerHtml = answerHtml.replace("%number%", answerNumber);
+        listContainer.innerHTML += answerHtml;
+        answerNumber++;
+    }
+}
+function checkAnswer() {
+    const checkedRadio = listContainer.querySelector('input[type="radio"]:checked');
+    if (!checkedRadio) {
+        submitBtn.blur();
+        return;
+    }
+    const userAnswer = parseInt(checkedRadio.value);
+    if (userAnswer === questions[questionIndex]["correct"]) score++;
+    if (questionIndex !== questions.length - 1) {
+        questionIndex++;
+        clearPage();
+        showQuestions();
+    } else {
+        clearPage();
+        showResults();
+    }
+}
+function showResults() {
+    const resultsTemplate = `
+    <h2 class="title">%title%</h2>
+	<h3 class="summary">%message%</h3>
+	<p class="result">%result%</p>
+`;
+    let title = "";
+    let message = "";
+    if (score === questions.length) {
+        title = "Вітаємо ✅";
+        message = "Ви відповіли на всі питання";
+    } else if (score * 100 / questions.length >= 50) {
+        title = "Хороший результат \uD83D\uDC4C";
+        message = "Ви відповіли на половину запитань";
+    } else {
+        title = "Варто постаратися ❌";
+        message = "Ви відповіли менше половини запитань";
+    }
+    let result = `${score} з ${questions.length}`;
+    const finalMessage = resultsTemplate.replace("%title%", title).replace("%message%", message).replace("%result%", result);
+    headerContainer.innerHTML = finalMessage;
+    submitBtn.blur();
+    submitBtn.innerHTML = "Почати спочатку";
+    submitBtn.onclick = ()=>history.go();
+    formInput(formContainer);
+}
+function clearPage() {
+    headerContainer.innerHTML = "";
+    listContainer.innerHTML = "";
+}
 function formInput(formContainer) {
     const formTemplate = `
-     <div class="box">
-       <form class="form" id="contact-form">
-         <input class="input" type="text" name="fname" id="fname" placeholder="First Name">
-         <input class="input" type="text" name="lname" id="lname" placeholder="Last Name">
-         <input class="input" type="email" name="email" id="email" placeholder="Email">
-         <input class="input" type="tel" name="phone" id="phone" placeholder="Phone">
-         <button class="button" type="submit">Submit</button>
-       </form>
-     </div>
-   `;
+    <div class="box">
+      <form class="form" id="contact-form">
+        <input class="input" type="text" name="fname" id="fname" placeholder="First Name">
+        <input class="input" type="text" name="lname" id="lname" placeholder="Last Name">
+        <input class="input" type="email" name="email" id="email" placeholder="Email">
+        <input class="input" type="tel" name="phone" id="phone" placeholder="Phone">
+        <button class="button" type="submit">Submit</button>
+      </form>
+    </div>
+  `;
     formContainer.innerHTML = formTemplate;
     $.validator.addMethod("regex", function(value, element, regexp) {
         return this.optional(element) || regexp.test(value);
@@ -1598,6 +1560,36 @@ var global = arguments[3];
         Block: G.Block
     };
 });
+
+},{}],"gkKU3":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
 
 },{}]},["f3BSW","gLLPy"], "gLLPy", "parcelRequire3afd")
 
