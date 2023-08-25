@@ -792,7 +792,7 @@ function formInput(formContainer) {
                     form.reset();
                 },
                 error: function(xhr, status, error) {
-                    (0, _notiflixDefault.default).Notify.warning("Помилка при відправці форми");
+                    (0, _notiflixDefault.default).Notify.info("Помилка при відправці форми");
                 }
             });
         }

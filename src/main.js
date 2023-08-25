@@ -240,7 +240,7 @@ function clearPage() {
           form.reset();
         },
         error: function (xhr, status, error) {
-          Notiflix.Notify.warning("Помилка при відправці форми");
+          Notiflix.Notify.info("Помилка при відправці форми");
         },
       });
     },
